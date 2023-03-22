@@ -1,10 +1,87 @@
 import React, { useState } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import Note from "./Note";
-import CreateArea from "./CreateArea";
 
 function App() {
+
+  function Header() {
+    return (
+      <header>
+        <h1>Keeper</h1>
+      </header>
+    );
+  }
+
+  function Footer() {
+    const year = new Date().getFullYear();
+    return (
+      <footer>
+        <p>Copyright ⓒ {year}</p>
+      </footer>
+    );
+  }
+
+  function CreateArea(props) {
+    const [note, setNote] = useState({
+      title: "",
+      content: ""
+    });
+  
+    function handleChange(event) {
+      const { name, value } = event.target;
+  
+      setNote(prevNote => {
+        return {
+          ...prevNote,
+          [name]: value
+        };
+      });
+    }
+  
+    function submitNote(event) {
+      props.onAdd(note);
+      setNote({
+        title: "",
+        content: ""
+      });
+      event.preventDefault();
+    }
+  
+    return (
+      <div>
+        <form>
+          <textarea
+            name="title"
+            onChange={handleChange}
+            value={note.title}
+            placeholder="Title"
+            rows="2"
+          />
+          <textarea
+            name="content"
+            onChange={handleChange}
+            value={note.content}
+            placeholder="Take a note..."
+            rows="3"
+          />
+          <button onClick={submitNote}>Add</button>
+        </form>
+      </div>
+    );
+  }
+
+ function Note(props) {
+  function handleClick() {
+    props.onDelete(props.id);
+  }
+
+  return (
+    <div className="note">
+      <h1>{props.title}</h1>
+      <p>{props.content}</p>
+      <button onClick={handleClick}>DELETE</button>
+    </div>
+  );
+}
+
   const [notes, setNotes] = useState([]);
 
   function addNote(newNote) {
